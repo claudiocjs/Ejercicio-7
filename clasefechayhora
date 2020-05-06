@@ -1,0 +1,189 @@
+from datetime import datetime, date, time, timedelta
+import calendar
+from clasehora import Hora
+
+class FechaHora:
+    __fechayhora=''
+    def __init__(self,d=1,m=1,a=2020,h=0,mi=0,s=0):
+        fechastr= None
+        horastr =  None
+        if isinstance(d,int) and isinstance(m,int) and isinstance(a,int) and isinstance(h,int) and isinstance(mi,int) and isinstance(s,int):
+            if d>0 and d<32:
+                if m==2:
+                 if a%4==0:
+                     if a%100 ==0:
+                         if a%400==0:
+                             if d<30:
+                                 fechastr = str(a) + '-'+ str(m) + '-' + str(d)
+                             else:
+                                 print("dia {}/{} no corresponde por que el año {} es bisiesto".format(d,m,a))
+                         else:
+                             fechastr =self.añoNObisiesto(d,m,a)
+                     else:
+                         if d<30:
+                             fechastr = str(a) + '-'+ str(m) + '-' + str(d)
+                         else:
+                            print("dia {}/{} no corresponde por que el año {} es bisiesto".format(d,m,a))
+                 else:
+                     fechastr = self.añoNObisiesto(d,m,a)
+                else:   
+                    fechastr = self.añoNObisiesto(d,m,a)
+            else:
+                print("dia ingresado no valido")
+            
+            
+            if h>-1 and h<24:
+                horastr = str(h) + ':'
+                if mi>-1 and mi<60:
+                    horastr += str(mi) + ':'
+                    if s>-1 and s<60:
+                        horastr +=str(s)
+                    else:
+                        print("los segundos {} no corresponde".format(s))
+                        horastr= None
+                else:
+                    print("los minutos {} no corresponde ".format(mi))
+                    horastr= None
+            else:
+                print("la hora: {} no corresponde ".format(h))
+            
+            
+        if fechastr != None and horastr != None:
+            fechastr += ' '
+            fechastr += horastr
+            self.__fechayhora= datetime.strptime(fechastr,'%Y-%m-%d %H:%M:%S')
+    
+    def añoNObisiesto(self,d,m,a):
+        festr=None
+        if isinstance(d,int) and isinstance(m,int) and isinstance(a,int):
+            if d>0 and d<32:
+                if m>0 and m<8:
+                    if m%2!=0:
+                        festr = str(a) + '-' + str(m) + '-' + str(d)
+                    else:
+                        if m!=2:
+                            if d<31:
+                                festr = str(a) + '-' + str(m) + '-' + str(d)
+                            else:
+                                d -=1
+                                festr = str(a) + '-' + str(m) + '-' + str(d)
+                        else:
+                            if d<29:
+                                festr = str(a) + '-' + str(m) + '-' + str(d)
+                            else:
+                                print("el dia {}/{}/{} no corresponde el año es NO bisiesto".format(d,m,a))
+                else:
+                    if m>7 and m<13:
+                        if m%2==0:
+                            festr = str(a) + '-' + str(m) + '-' + str(d)
+                        else:
+                            if d<31:
+                                festr = str(a) + '-' + str(m) + '-' + str(d)
+                            else:
+                                d-=1
+                                festr = str(a) + '-' + str(m) + '-' + str(d)
+                    else:
+                        print("el mes: {} es invalido ".format(m))        
+            else:
+                print("el dia ingresado no es valido")
+        return festr
+    
+    def __str__(self):
+        return'{}'.format(self.__fechayhora)
+    def Mostrar(self):
+        print(self)
+    def get_fechayhora(self):
+        return self.__
+    def get_hora(self):
+        return self.__fechayhora.time()
+    
+    def PonerEnHora(self,h=0,m=0,s=0):
+        if isinstance(h,int) and isinstance(m,int) and isinstance(s,int):
+            if h>-1 and h<24:
+                if m>-1 and m<60:
+                    if s>-1 and s<60:
+                        if h==0:
+                            t=str(self.__fechayhora.hour)+':'
+                        else:
+                            t=str(h)+':'
+                        if m==0:
+                            t +=str(self.__fechayhora.minute)+':'
+                        else:
+                            t +=str(m)+':'
+                        if s==0:
+                            t +=str(self.__fechayhora.second)
+                        else:
+                            t +=str(s)
+                        d= str(self.__fechayhora.year) +'-'+ str(self.__fechayhora.month) +'-'+ str(self.__fechayhora.day)+ ' '
+                        d+=t
+                        self.__fechayhora=datetime.strptime(d,'%Y-%m-%d %H:%M:%S')
+                      
+    def AdelantarHora(self,h=0,m=0,s=0):
+        if isinstance(h,int) and isinstance(m,int) and isinstance(s,int):
+            if h>-1:
+                if m>-1:
+                    if s>-1:
+                        if h!=0:
+                            self.__fechayhora +=timedelta(hours=h)
+                        if m!=0:
+                            self.__fechayhora +=timedelta(minutes=m)
+                        if s!=0:
+                            self.__fechayhora +=timedelta(seconds=s)
+                            
+    def AtrasarHora(self,h=0,m=0,s=0):
+        if isinstance(h,int) and isinstance(m,int) and isinstance(s,int):
+            if h>-1:
+                if m>-1:
+                    if s>-1:
+                        if h!=0:
+                            self.__fechayhora -=timedelta(hours=h)
+                        if m!=0:
+                            self.__fechayhora -=timedelta(minutes=m)
+                        if s!=0:
+                            self.__fechayhora -=timedelta(seconds=s)
+    
+    def __add__(self,otro):
+        pridia=self.__fechayhora.strftime('%d-%m-%Y')
+        pridiasepa=pridia.split('-')
+        prihs=self.__fechayhora.strftime('%H:%M:%S')
+        prihsepa=prihs.split(':')
+        primero=FechaHora(int(pridiasepa[0]),int(pridiasepa[1]),int(pridiasepa[2]),int(prihsepa[0]),int(prihsepa[1]),int(prihsepa[2]) )
+        if isinstance(otro,FechaHora) or isinstance(otro,Hora) :
+            hstr=otro.get_hora().strftime('%H:%M:%S')
+            hsepa=hstr.split(':')
+            primero.AdelantarHora(int(hsepa[0]),int(hsepa[1]),int(hsepa[2]))
+            return primero
+        else:
+            print("la segunda hora no corresponde")   
+            return primero
+    def __sub__(self,otro):
+        pridia=self.__fechayhora.strftime('%d-%m-%Y')
+        pridiasepa=pridia.split('-')
+        prihs=self.__fechayhora.strftime('%H:%M:%S')
+        prihsepa=prihs.split(':')
+        primero=FechaHora(int(pridiasepa[0]),int(pridiasepa[1]),int(pridiasepa[2]),int(prihsepa[0]),int(prihsepa[1]),int(prihsepa[2]) )
+        if isinstance(otro,FechaHora):
+            hstr=otro.get_fechayhora().strftime('%H:%M:%S')
+            hsepa=hstr.split(':')
+            primero.AtrasarHora(int(hsepa[0]),int(hsepa[1]),int(hsepa[2]))
+            return primero
+        else:
+            print("la segunda hora no corresponde")   
+            return primero
+    def __gt__(self,otro):
+        return self.__fechayhora > otro.get_fechayhora()
+    def __radd__(self,otro):
+        pridia=self.__fechayhora.strftime('%d-%m-%Y')
+        pridiasepa=pridia.split('-')
+        prihs=self.__fechayhora.strftime('%H:%M:%S')
+        prihsepa=prihs.split(':')
+        primero=FechaHora(int(pridiasepa[0]),int(pridiasepa[1]),int(pridiasepa[2]),int(prihsepa[0]),int(prihsepa[1]),int(prihsepa[2]) )
+        if isinstance(otro,Hora) or isinstance(otro,FechaHora):
+            hstr=otro.get_hora().strftime('%H:%M:%S')
+            hsepa=hstr.split(':')
+            primero.AdelantarHora(int(hsepa[0]),int(hsepa[1]),int(hsepa[2]))
+            return primero
+        else:
+            print("la segunda hora no corresponde (__radd__)")
+            return primero
+        
