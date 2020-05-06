@@ -1,0 +1,19 @@
+from datetime import datetime, date, time, timedelta
+import calendar
+class Hora:
+    __hora=''
+    def __init__(self,h=0,m=0,s=0):
+        if isinstance(h,int) and isinstance(m,int) and isinstance(s,int):
+            if h>-1 and h<24:
+                if m>-1 and m<60:
+                    if s>-1 and s<60:
+                        hsstr=str(h)+':'+str(m)+':'+str(s)
+                        self.__hora=datetime.strptime(hsstr,'%H:%M:%S').time()
+    
+    def __str__(self):
+        return'{}'.format(self.__hora)
+    def Mostrar(self):
+        print(self)
+    def get_hora(self):
+        return self.__hora
+    
